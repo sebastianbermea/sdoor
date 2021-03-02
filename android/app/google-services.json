@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "728614660066",
+    "project_id": "sdoor-8411f",
+    "storage_bucket": "sdoor-8411f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:728614660066:android:0a21020bb4277ac535bbbb",
+        "android_client_info": {
+          "package_name": "com.dismov.sdoor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "728614660066-o1lidul2bo2m71fiaa0fdoppujn2i12n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQfy3cO-6zEx_BnPt_5Z1Xh1YuP0vF4Co"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "728614660066-o1lidul2bo2m71fiaa0fdoppujn2i12n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
