@@ -1,6 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sdoor/models/user.dart';
+import 'package:sdoor/services/db.dart';
 
 
 class AuthService{
@@ -43,11 +44,11 @@ class AuthService{
     }
   }
 
-  Future singUpEmail(String email, String pass) async{
+  Future singUpEmail(String email, String pass, String username, String idiom) async{
     try{
       UserCredential credential = await _auth.createUserWithEmailAndPassword(email: email, password: pass);
       User user = credential.user;
-      //await DatebaseService(uid: user.uid).updateUserData('0', 'New member', 100);
+      await DBService(uid: user.uid).updateUserData(username, idiom, false, "", false, false);
       return _userfromFirebase(user);
 
     }catch(e){

@@ -38,6 +38,7 @@ class _NotVerfiedState extends State<NotVerfied> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Center(child: Text('Waiting for verfication...', style: TextStyle(color: Colors.white, fontSize: 24))),
+          // ignore: deprecated_member_use
           RaisedButton(onPressed: () async{
                 await _auth.signOut();
               },

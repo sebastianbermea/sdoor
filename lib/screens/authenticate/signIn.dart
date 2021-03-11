@@ -81,15 +81,15 @@ class _SignInState extends State<SignIn> {
                 decoration: textInputDecoration.copyWith(labelText: 'Email',),
                 style: TextStyle(color: Colors.white),
                 
-                validator: (val)=> val.isEmpty ? 'Please provide an email': null,
+                validator: (val)=> val.isEmpty ? (dropdownValue=="English" ? 'Please provide an email': 'Por favor ingresa un email'): null,
                 onChanged: (val){
                   setState(() => email = val);
                 },
               ),
              SizedBox(height: 20.0),
               TextFormField(
-                decoration: textInputDecoration.copyWith(labelText: 'Password'),
-                validator: (val)=> val.length < 6 ? 'Please provide a password wit 6+ characters': null,
+                decoration: textInputDecoration.copyWith(labelText: (dropdownValue=="English" ? 'Password': 'Contraseña')),
+                validator: (val)=> val.length < 6 ? (dropdownValue=="English" ? 'Please provide a password with 6+ characters': 'Por favor ingresa una contraseña con 6+ caracteres'): null,
                 obscureText: true,
                 onChanged: (val){
                   setState(() => pass = val);
@@ -99,6 +99,7 @@ class _SignInState extends State<SignIn> {
                SizedBox(height: 40.0),
                Container(
                   width: double.infinity,      
+                  // ignore: deprecated_member_use
                   child: RaisedButton(
                     elevation: 5.0,
                     padding: EdgeInsets.symmetric(vertical: 16.0),
@@ -116,21 +117,22 @@ class _SignInState extends State<SignIn> {
                  },
                     color: Colors.lightBlue,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                    child: Text('Login', style: TextStyle(color: Colors.white, fontSize: 18)),
+                    child: Text((dropdownValue=="English" ? 'Login': 'Iniciar Sesion'), style: TextStyle(color: Colors.white, fontSize: 18)),
                   ),
                 ),
+                // ignore: deprecated_member_use
                 FlatButton(
                     onPressed: (){
                       Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SignUp()));
+                                builder: (context) => SignUp(idiom: dropdownValue,)));
                     }, child:  Row(
                       mainAxisAlignment: MainAxisAlignment.center,
            
                       children: [
-                        Text('Dont have an account?  ',style: TextStyle(color: Colors.white70, fontSize: 14)),
-                        Text('Register',style: TextStyle(color: Colors.lightBlueAccent, fontSize: 14)),
+                        Text((dropdownValue=="English" ? 'Dont have an account? ': 'No tienes cuenta? '),style: TextStyle(color: Colors.white70, fontSize: 14)),
+                        Text((dropdownValue=="English" ? 'Register': 'Registrarse'),style: TextStyle(color: Colors.lightBlueAccent, fontSize: 14)),
                       ],
                     ),
                   ),

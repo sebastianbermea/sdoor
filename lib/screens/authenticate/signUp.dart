@@ -5,20 +5,24 @@ import 'package:sdoor/shared/loading.dart';
 
 class SignUp extends StatefulWidget {
   final Function setSignView;
-  SignUp({this.setSignView});
+  final String idiom;
+  SignUp({this.setSignView, this.idiom});
 
   @override
-  _SignUpState createState() => _SignUpState();
+  _SignUpState createState() => _SignUpState(idiom);
 }
 
 class _SignUpState extends State<SignUp> {
 
+  _SignUpState(this.idiom);
+  final String idiom;
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String pass = '';
   String confirmPass = '';
   String error = '';
+  String username = '';
   bool loading = false;
   @override
   Widget build(BuildContext context) {
@@ -44,33 +48,37 @@ class _SignUpState extends State<SignUp> {
             child: Form(
             key: _formKey,
             child: Column(children: <Widget>[
-              Text('Sign Up', style: TextStyle(fontSize: 30),),
+              Text((idiom=="English" ? 'Sign Up': 'Registro'), style: TextStyle(fontSize: 30),),
               SizedBox(height: 30.0),
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: 'Username'),
+                decoration: textInputDecoration.copyWith(hintText: (idiom=="English" ? 'Username': 'Nombre de usuario')),
+                 validator: (val)=> val.isEmpty ? (idiom=="English" ? 'Please provide an username': 'Por favor ingresa un nombre de usuario'): null,
+                onChanged: (val){
+                  setState(() => username = val);
+                },
               ),
               SizedBox(height: 20.0),
               TextFormField(
                 decoration: textInputDecoration.copyWith(hintText: 'Email'),
-                validator: (val)=> val.isEmpty ? 'Please provide an email': null,
+                validator: (val)=> val.isEmpty ? (idiom=="English" ? 'Please provide an email': 'Por favor ingresa un email'): null,
                 onChanged: (val){
                   setState(() => email = val);
                 },
               ),
              SizedBox(height: 20.0),
              TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: 'Password'),
+                decoration: textInputDecoration.copyWith(hintText: (idiom=="English" ? 'Password': 'Contraseña')),
                 obscureText: true,
-                validator: (val)=> val.length < 6 ? 'Please provide a password wit 6+ characters': null,
+                validator: (val)=> val.length < 6 ?  (idiom=="English" ? 'Please provide a password with 6+ characters': 'Por favor ingresa una contraseña con 6+ caracteres'): null,
                 onChanged: (val){
                   setState(() => pass = val);
                 },
               ),
               SizedBox(height: 20.0),
              TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: 'Confirm Password'),
+                decoration: textInputDecoration.copyWith(hintText: (idiom=="English" ? 'Confirm Password': 'Confirmar Contraseña')),
                 obscureText: true,
-                validator: (val)=> val != pass ? 'Passwords must be the same': null,
+                validator: (val)=> val != pass ? (idiom=="English" ? 'Passwords must match': 'Las contraseñas deben coincidir'): null,
                 onChanged: (val){
                   setState(() => confirmPass = val);
                 },
@@ -78,6 +86,7 @@ class _SignUpState extends State<SignUp> {
               SizedBox(height: 40.0),
               Container(
                   width: double.infinity,      
+                  // ignore: deprecated_member_use
                   child: RaisedButton(
                     elevation: 5.0,
                     padding: EdgeInsets.symmetric(vertical: 16.0),
@@ -86,7 +95,7 @@ class _SignUpState extends State<SignUp> {
                      setState(() {
                        loading=true;
                      });
-                     dynamic result = await _auth.singUpEmail(email, pass);
+                     dynamic result = await _auth.singUpEmail(email, pass, username, idiom);
                     
                      if(result==null){
                         setState((){ 
@@ -100,7 +109,7 @@ class _SignUpState extends State<SignUp> {
                  },
                     color: Colors.lightBlue,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-                    child: Text('Register', style: TextStyle(color: Colors.white, fontSize: 18)),
+                    child: Text((idiom=="English" ? 'Register': 'Registrarse'), style: TextStyle(color: Colors.white, fontSize: 18)),
                   ),
                 ),
                
