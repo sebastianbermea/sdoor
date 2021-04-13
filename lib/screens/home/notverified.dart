@@ -6,15 +6,18 @@ import 'package:sdoor/screens/home/home.dart';
 import 'package:sdoor/services/auth.dart';
 
 class NotVerfied extends StatefulWidget {
+  final String idiom;
+  NotVerfied({this.idiom});
   @override
-  _NotVerfiedState createState() => _NotVerfiedState();
+  _NotVerfiedState createState() => _NotVerfiedState(idiom: idiom);
 }
 
 class _NotVerfiedState extends State<NotVerfied> {
   final AuthService _auth = AuthService();
   User user;
   Timer timer;
-
+  final String idiom;
+  _NotVerfiedState({this.idiom});
   @override
   void initState() {
    
@@ -37,13 +40,14 @@ class _NotVerfiedState extends State<NotVerfied> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Center(child: Text('Waiting for verfication...', style: TextStyle(color: Colors.white, fontSize: 24))),
+          Center(child: Text((idiom=='English')?'Waiting for verfication...':(idiom=='Español')? 'Esperando verificacion...'
+          :'Aguardando verificação ...', style: TextStyle(color: Colors.white, fontSize: 24))),
           // ignore: deprecated_member_use
           RaisedButton(onPressed: () async{
                 await _auth.signOut();
               },
                color: Colors.pinkAccent[400],
-               child: Text('Log out', style: TextStyle(color: Colors.white),), )
+               child: Text(((idiom=='English')?'Log out':(idiom=='Español')?'Cerrar Sesion':'Fechar Sessão'), style: TextStyle(color: Colors.white),), )
         ]
       ),
     );

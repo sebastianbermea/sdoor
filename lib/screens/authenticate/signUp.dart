@@ -24,6 +24,8 @@ class _SignUpState extends State<SignUp> {
   String error = '';
   String username = '';
   bool loading = false;
+  bool admin = true;
+  String dropdownRol = 'Admin';
   @override
   Widget build(BuildContext context) {
     return loading? Loading(): Scaffold(
@@ -49,10 +51,36 @@ class _SignUpState extends State<SignUp> {
             key: _formKey,
             child: Column(children: <Widget>[
               Text((idiom=="English" ? 'Sign Up': 'Registro'), style: TextStyle(fontSize: 30),),
-              SizedBox(height: 30.0),
+               SizedBox(height: 10.0),
+               DropdownButton<String>(
+                  value: dropdownRol,
+                  icon: Icon(Icons.arrow_drop_down_outlined),
+                  iconSize: 24,
+                  elevation: 16,
+                  style: TextStyle(color: Colors.white, fontSize:17),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropdownRol = newValue;
+                      if(newValue == 'Admin')
+                          admin=true;
+                      print(admin);
+                    });
+                  },
+                  isExpanded: true,
+                  items: <String>['Admin', (idiom=="English")?'Employee':(idiom=="Español")? 'Empleado': 'Empregada']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  ),
+                  SizedBox(height: 15.0),
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: (idiom=="English" ? 'Username': 'Nombre de usuario')),
-                 validator: (val)=> val.isEmpty ? (idiom=="English" ? 'Please provide an username': 'Por favor ingresa un nombre de usuario'): null,
+                decoration: textInputDecoration.copyWith(hintText: (idiom=="English" ? 'Username': 
+                (idiom=="Español"?'Nombre de usuario':'Nome de usuário'))),
+                 validator: (val)=> val.isEmpty ? (idiom=="English" ? 'Please provide an username':
+                  (idiom=="Español"? 'Por favor ingresa un nombre de usuario':'Forneça um nome de usuário')): null,
                 onChanged: (val){
                   setState(() => username = val);
                 },
@@ -60,25 +88,29 @@ class _SignUpState extends State<SignUp> {
               SizedBox(height: 20.0),
               TextFormField(
                 decoration: textInputDecoration.copyWith(hintText: 'Email'),
-                validator: (val)=> val.isEmpty ? (idiom=="English" ? 'Please provide an email': 'Por favor ingresa un email'): null,
+                validator: (val)=> val.isEmpty ? (idiom=="English" ? 'Please provide an email':
+                (idiom=="Español"? 'Por favor ingresa un email':'Por favor, forneça um e-mail')): null,
                 onChanged: (val){
                   setState(() => email = val);
                 },
               ),
              SizedBox(height: 20.0),
              TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: (idiom=="English" ? 'Password': 'Contraseña')),
+                decoration: textInputDecoration.copyWith(hintText: (idiom=="English" ? 'Password': idiom=="Español"?'Contraseña':'Senha')),
                 obscureText: true,
-                validator: (val)=> val.length < 6 ?  (idiom=="English" ? 'Please provide a password with 6+ characters': 'Por favor ingresa una contraseña con 6+ caracteres'): null,
+                validator: (val)=> val.length < 6 ?  (idiom=="English" ? 'Please provide a password with 6+ characters':
+                (idiom=="Español"? 'Por favor ingresa una contraseña con 6+ caracteres':'Digite uma senha com mais de 5 caracteres')): null,
                 onChanged: (val){
                   setState(() => pass = val);
                 },
               ),
               SizedBox(height: 20.0),
              TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: (idiom=="English" ? 'Confirm Password': 'Confirmar Contraseña')),
+                decoration: textInputDecoration.copyWith(hintText: (idiom=="English" ? 'Confirm Password': 
+                (idiom=="Español"?'Confirmar Contraseña':'Confirmar senha'))),
                 obscureText: true,
-                validator: (val)=> val != pass ? (idiom=="English" ? 'Passwords must match': 'Las contraseñas deben coincidir'): null,
+                validator: (val)=> val != pass ? (idiom=="English" ? 'Passwords must match':
+                (idiom=="Español"? 'Las contraseñas deben coincidir':'As senhas devem corresponder')): null,
                 onChanged: (val){
                   setState(() => confirmPass = val);
                 },
@@ -95,7 +127,7 @@ class _SignUpState extends State<SignUp> {
                      setState(() {
                        loading=true;
                      });
-                     dynamic result = await _auth.singUpEmail(email, pass, username, idiom);
+                     dynamic result = await _auth.singUpEmail(email, pass, username, idiom, admin);
                     
                      if(result==null){
                         setState((){ 

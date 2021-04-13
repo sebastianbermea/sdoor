@@ -12,7 +12,7 @@ class DBService {
       FirebaseFirestore.instance.collection("Doors");
 
   Future updateUserData(
-      String name, String idiom, bool hasDoor, String doorId, bool viewData, bool register) async {
+      String name, String idiom, bool hasDoor, String doorId, bool viewData, bool register, bool admin) async {
     return await userCollection.doc(uid).set({
       'name': name,
       'idiom': idiom,
@@ -20,6 +20,7 @@ class DBService {
       'doorId': doorId,
       'viewData': viewData,
       'register': register,
+      'admin': admin,
     });
   }
 
@@ -43,6 +44,7 @@ class DBService {
       doorId: snapshot.data()['doorId'],
       viewData: snapshot.data()['viewData'],
       register: snapshot.data()['register'],
+      admin:  snapshot.data()['admin'],
     );
   }
 
@@ -60,7 +62,8 @@ class DBService {
       hasDoor: snapshot.data()['hasDoor'],
       doorId: snapshot.data()['doorId'],
        viewData: snapshot.data()['viewData'],
-      register: snapshot.data()['register'],);
+      register: snapshot.data()['register'],
+      admin:snapshot.data()['admin'], );
     else
       return null;
   }

@@ -55,7 +55,8 @@ class _HomeState extends State<Home> {
                       ? Center(child: Text('Data'))
                       : ((newUser.doorId.isNotEmpty)
                           ? Registration(user: newUser)
-                          : Center(child: Text( (newUser.idiom == "English") ?'No door available':'No hay puerta disponible')))),
+                          : Center(child: Text( (newUser.idiom == "English") ?'No door available':
+                          (newUser.idiom == "Español") ?'No hay puerta disponible':'Sem porta disponível')))),
               bottomNavigationBar: BottomNavigationBar(
                 backgroundColor: Colors.blueGrey[700],
                 selectedItemColor: Colors.lightBlue,
@@ -63,11 +64,11 @@ class _HomeState extends State<Home> {
                 items: [
                   BottomNavigationBarItem(
                     icon: Icon(Icons.camera),
-                    label: (newUser.idiom == "English") ? 'Door' : 'Puerta',
+                    label: (newUser.idiom == "English") ? 'Door' : (newUser.idiom == "Español") ?'Puerta':'Porta',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.date_range),
-                    label: (newUser.idiom == "English") ? 'Data' : 'Datos',
+                    label: (newUser.idiom == "English") ? 'Data' : (newUser.idiom == "Español") ?'Datos':'Dados',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.fingerprint),

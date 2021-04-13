@@ -21,13 +21,11 @@ class _SettingsState extends State<SettingsW> {
   @override
   Widget build(BuildContext context) {
     
-  print(user.idiom);
-    
     dropdownValue = user.idiom;
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            (user.idiom == "English") ? 'Settings' : 'Configuracion',
+            (user.idiom == "English") ? 'Settings' : (user.idiom == "Español") ? 'Configuracion':'Contexto',
             style: TextStyle(fontSize: 28),
           ),
           centerTitle: true,
@@ -35,16 +33,22 @@ class _SettingsState extends State<SettingsW> {
           elevation: 0.0,
         ),
         body: Column(children: <Widget>[
-          SizedBox(height: 50.0),
+          SizedBox(height: 60.0),
+          
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text((user.idiom == "English") ? "Username: " : "Usuario: ",
-                  style: TextStyle(fontSize: 20)),
-              Text(user.username,  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text((user.idiom == "English") ? "Username:  " :(user.idiom == "Español") ? "Usuario:  ":'Do utilizador:  ',
+                  style: TextStyle(fontSize: 22)),
+              Text(user.username,  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             ],
           ),
-          SizedBox(height: 30.0),
+          SizedBox(height: 10.0),
+          Text(
+                (user.admin) ? 'Admin' : (user.idiom == "English") ? "Employee" :(user.idiom == "Español") ? "Empleado":'Empregada',
+                style: TextStyle(fontSize: 24, fontStyle: FontStyle.italic),
+              ),
+          SizedBox(height: 60.0),
           // ignore: deprecated_member_use
           RaisedButton(
             elevation: 5.0,
@@ -56,7 +60,7 @@ class _SettingsState extends State<SettingsW> {
             color: Colors.lightBlue,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-            child: Text((user.idiom == "English") ? 'Log Out' : 'Cerrar sesion',
+            child: Text((user.idiom == "English") ? 'Log Out' : (user.idiom == "Español") ?'Cerrar sesion': 'Fechar Sessão',
                 style: TextStyle(color: Colors.white, fontSize: 16)),
           ),
           SizedBox(height: 40.0),
@@ -65,7 +69,7 @@ class _SettingsState extends State<SettingsW> {
             children: [
               SizedBox(width: 20.0),
               Text(
-                (user.idiom == "English") ?"Idiom: ": "Idioma: ",
+                (user.idiom == "English") ?"Idiom: ":(user.idiom == "Español") ? "Idioma: ":'Língua',
                 style: TextStyle(fontSize: 20),
               ),
               SizedBox(width: 80.0),
@@ -83,9 +87,9 @@ class _SettingsState extends State<SettingsW> {
                     dropdownValue = newValue;
                   });
                   user.idiom = newValue;
-                  await DBService(uid: user.uid).updateUserData(user.username, user.idiom, user.hasDoor, user.doorId, user.viewData, user.register);
+                  await DBService(uid: user.uid).updateUserData(user.username, user.idiom, user.hasDoor, user.doorId, user.viewData, user.register, user.admin);
                 },
-                items: <String>['English', 'Español']
+                items: <String>['English', 'Español', 'Português']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,

@@ -89,7 +89,7 @@ class _WaitTileState extends State<WaitTile> {
                     child: Text((widget.mainUser.idiom == "English") ? 'Accept' : 'Aceptar'),
                     onPressed: () async {
                       await DBService(uid: widget.user.uid, doorId: widget.mainUser.doorId).deleteFromDoor();
-                      await DBService(uid: widget.user.uid).updateUserData(widget.user.username, widget.user.idiom, widget.user.hasDoor, widget.mainUser.doorId, viewData, registerUsers);
+                      await DBService(uid: widget.user.uid).updateUserData(widget.user.username, widget.user.idiom, widget.user.hasDoor, widget.mainUser.doorId, viewData, registerUsers, widget.user.admin);
                       widget.destroy(widget.user);
                       Navigator.of(context).pop();
                     }),

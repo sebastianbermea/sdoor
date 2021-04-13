@@ -13,14 +13,14 @@ class Door extends StatelessWidget {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text((user.idiom == "English") ? 'Door ID' : 'ID Puerta'),
+            title: Text((user.idiom == "English") ? 'Door ID' :(user.idiom == "Español") ?  'ID Puerta':'ID porta'),
             content: TextField(
               controller: controller,
             ),
             actions: <Widget>[
               MaterialButton(
                   elevation: 5.0,
-                  child: Text((user.idiom == "English") ? 'Submit' : 'Aceptar'),
+                  child: Text((user.idiom == "English") ? 'Submit' : (user.idiom == "Español") ?'Aceptar':'Aceitar'),
                   onPressed: () async {
                     if (controller.text.toString().isNotEmpty) {
                       NewDoor door = await DBService(
@@ -44,7 +44,7 @@ class Door extends StatelessWidget {
                         print("Permision");
                         user.hasDoor = true;
                       }
-                      await DBService(uid: user.uid).updateUserData(user.username, user.idiom, user.hasDoor, user.doorId, user.viewData, user.register);
+                      await DBService(uid: user.uid).updateUserData(user.username, user.idiom, user.hasDoor, user.doorId, user.viewData, user.register, user.admin);
                     }
 
                     Navigator.of(context).pop();
@@ -69,7 +69,8 @@ class Door extends StatelessWidget {
                       TextSpan(
                           text: (user.idiom == "English")
                               ? 'Current temperature:   '
-                              : 'Temperatura actual:   '),
+                              :(user.idiom == "Español") ? 'Temperatura actual:   ':
+                              'Temperatura real:   '),
                       TextSpan(
                           text: '36°',
                           style: TextStyle(
@@ -82,7 +83,8 @@ class Door extends StatelessWidget {
                 Text(
                     (user.idiom == "English")
                         ? 'Last person to enter:'
-                        : 'Ultima persona en entrar:',
+                        :(user.idiom == "Español") ?  'Ultima persona en entrar:'
+                        :'Última pessoa a entrar:',
                     style: TextStyle(fontSize: 18)),
                 SizedBox(height: 5.0),
                 Text('xxxxxx xxxxxx xxxxx',
@@ -117,15 +119,15 @@ class Door extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(3)),
                     child: Text(
-                        (user.idiom == "English")
-                            ? 'Add Door'
-                            : 'Añadir Puerta',
+                        (user.idiom == "English") ? 'Add Door'
+                        :(user.idiom == "Español") ? 'Añadir Puerta'
+                        :'Adicionar porta',
                         style: TextStyle(color: Colors.white, fontSize: 18)),
                   )
                 : Text(
-                    (user.idiom == "English")
-                        ? 'Waiting for admin...'
-                        : 'Esperando al admin...',
+                    (user.idiom == "English") ? 'Waiting for admin...'
+                    : (user.idiom == "Español") ?'Esperando al admin...'
+                    :'Esperando pelo admin ...',
                     style: TextStyle(fontSize: 18)),
           ));
   }

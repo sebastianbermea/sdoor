@@ -6,7 +6,6 @@ import 'package:sdoor/services/db.dart';
 
 class AuthService{
    final FirebaseAuth _auth = FirebaseAuth.instance;
-
   NewUser _userfromFirebase(User user){
     return user != null ? NewUser(uid: user.uid, verified: user.emailVerified) : null;
   }
@@ -32,10 +31,13 @@ class AuthService{
   }
 
   
-  Future signInEmail(String email, String pass) async{
+  Future signInEmail(String email, String pass, bool admin1) async{
     try{
       UserCredential credential = await _auth.signInWithEmailAndPassword(email: email, password: pass);
       User user = credential.user;
+      if(user.photoURL!="1" && admin1){
+        signOut();
+      }
       return _userfromFirebase(user);
 
     }catch(e){
@@ -44,11 +46,20 @@ class AuthService{
     }
   }
 
-  Future singUpEmail(String email, String pass, String username, String idiom) async{
+  Future singUpEmail(String email, String pass, String username, String idiom, bool admin) async{
     try{
       UserCredential credential = await _auth.createUserWithEmailAndPassword(email: email, password: pass);
       User user = credential.user;
-      await DBService(uid: user.uid).updateUserData(username, idiom, false, "", false, false);
+      String tempC; 
+      if(admin)
+        tempC="1";
+      else
+        tempC="0";
+      user.updateProfile(
+        displayName: username,
+        photoURL:tempC
+      );
+      await DBService(uid: user.uid).updateUserData(username, idiom, false, "", false, false, admin);
       return _userfromFirebase(user);
 
     }catch(e){
@@ -56,7 +67,7 @@ class AuthService{
       return null;
     }
   }
-
+  
   Future signOut() async{
     try{
       await _auth.signOut();

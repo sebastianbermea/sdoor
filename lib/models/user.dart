@@ -5,7 +5,8 @@ class NewUser{
   final String username;
   String idiom;
   String doorId;
+  bool admin;
   bool viewData;
   bool register;
-  NewUser({this.uid,this.verified, this.username, this.idiom, this.hasDoor, this.doorId, this.viewData, this.register});
+  NewUser({this.uid,this.verified, this.username, this.idiom, this.hasDoor, this.doorId, this.viewData, this.register, this.admin});
 }

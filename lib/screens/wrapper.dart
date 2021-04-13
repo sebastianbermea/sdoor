@@ -14,11 +14,11 @@ class Wrapper extends StatelessWidget {
       return Authenticate();
     else{
       return Home();
-     /* print("User verified ${user.verified}");
+      /*print("User verified ${user.verified}");
       if(user.verified)
        return Home();
        else
-       return NotVerfied();*/
+       return NotVerfied(idiom: user.idiom);*/
     }
      
   }
