@@ -34,6 +34,7 @@ dependencies:
   flutter_spinkit: ^5.0.0
   cloud_firestore: ^1.0.0
   firebase_core_platform_interface: ^4.0.0
+  flutter_bluetooth_serial: ^0.2.2
 
 dev_dependencies:
   flutter_test:
