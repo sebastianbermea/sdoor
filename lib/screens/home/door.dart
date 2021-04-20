@@ -3,48 +3,55 @@ import 'package:sdoor/models/newdoor.dart';
 import 'package:sdoor/models/user.dart';
 import 'package:sdoor/services/db.dart';
 
-class Door extends StatelessWidget {
+class Door extends StatefulWidget {
   final NewUser user;
   Door({this.user});
- 
+
+  @override
+  _DoorState createState() => _DoorState();
+}
+
+class _DoorState extends State<Door> {
+  String lastPerson = "xxxx xxxx xxxx";
+
   createAlertDialog(BuildContext context) {
     TextEditingController controller = TextEditingController();
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text((user.idiom == "English") ? 'Door ID' :(user.idiom == "Español") ?  'ID Puerta':'ID porta'),
+            title: Text((widget.user.idiom == "English") ? 'Door ID' :(widget.user.idiom == "Español") ?  'ID Puerta':'ID porta'),
             content: TextField(
               controller: controller,
             ),
             actions: <Widget>[
               MaterialButton(
                   elevation: 5.0,
-                  child: Text((user.idiom == "English") ? 'Submit' : (user.idiom == "Español") ?'Aceptar':'Aceitar'),
+                  child: Text((widget.user.idiom == "English") ? 'Submit' : (widget.user.idiom == "Español") ?'Aceptar':'Aceitar'),
                   onPressed: () async {
                     if (controller.text.toString().isNotEmpty) {
                       NewDoor door = await DBService(
-                              doorId: controller.text.toString(), uid: user.uid)
+                              doorId: controller.text.toString(), uid: widget.user.uid)
                           .getDoor;
                       if (door == null) {
                         print("New Owner");
                         await DBService(
                                 doorId: controller.text.toString(),
-                                uid: user.uid)
+                                uid: widget.user.uid)
                             .addDoor();                 
-                        user.doorId = controller.text.toString();
-                        user.hasDoor = true;
-                        user.viewData = true;
-                        user.register = true;
+                        widget.user.doorId = controller.text.toString();
+                        widget.user.hasDoor = true;
+                        widget.user.viewData = true;
+                        widget.user.register = true;
                       } else {
                          await DBService(
                                 doorId: controller.text.toString(),
-                                uid: user.uid)
+                                uid: widget.user.uid)
                             .registerToDoor();
                         print("Permision");
-                        user.hasDoor = true;
+                        widget.user.hasDoor = true;
                       }
-                      await DBService(uid: user.uid).updateUserData(user.username, user.idiom, user.hasDoor, user.doorId, user.viewData, user.register, user.admin);
+                      await DBService(uid: widget.user.uid).updateUserData(widget.user.username, widget.user.idiom, widget.user.hasDoor, widget.user.doorId, widget.user.viewData, widget.user.register, widget.user.admin);
                     }
 
                     Navigator.of(context).pop();
@@ -56,7 +63,7 @@ class Door extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (user.doorId.isNotEmpty)
+    return (widget.user.doorId.isNotEmpty)
         ? Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -67,9 +74,9 @@ class Door extends StatelessWidget {
                         style: TextStyle(fontSize: 22),
                         children: <TextSpan>[
                       TextSpan(
-                          text: (user.idiom == "English")
+                          text: (widget.user.idiom == "English")
                               ? 'Current temperature:   '
-                              :(user.idiom == "Español") ? 'Temperatura actual:   ':
+                              :(widget.user.idiom == "Español") ? 'Temperatura actual:   ':
                               'Temperatura real:   '),
                       TextSpan(
                           text: '36°',
@@ -81,13 +88,13 @@ class Door extends StatelessWidget {
                 Image(image: AssetImage('assets/images/CameraNot.png')),
                 SizedBox(height: 20.0),
                 Text(
-                    (user.idiom == "English")
+                    (widget.user.idiom == "English")
                         ? 'Last person to enter:'
-                        :(user.idiom == "Español") ?  'Ultima persona en entrar:'
+                        :(widget.user.idiom == "Español") ?  'Ultima persona en entrar:'
                         :'Última pessoa a entrar:',
                     style: TextStyle(fontSize: 18)),
                 SizedBox(height: 5.0),
-                Text('xxxxxx xxxxxx xxxxx',
+                Text(lastPerson,
                     style:
                         TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                 SizedBox(height: 30.0),
@@ -95,18 +102,27 @@ class Door extends StatelessWidget {
                 RaisedButton(
                   elevation: 5.0,
                   padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 40),
-                  onPressed: () {},
+                  onPressed: () async{
+                    await DBService(
+                                doorId: widget.user.doorId,
+                                uid: widget.user.uid)
+                            .updateDoorData(name: widget.user.username, finger: false);
+                    setState(() {
+                       lastPerson = widget.user.username;
+                    });
+                   
+                  },
                   color: Colors.lightBlue,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3)),
-                  child: Text((user.idiom == "English") ? 'Open' : 'Abrir',
+                  child: Text((widget.user.idiom == "English") ? 'Open' : 'Abrir',
                       style: TextStyle(color: Colors.white, fontSize: 18)),
                 ),
               ],
             ),
           )
         : (Center(
-            child: (!user.hasDoor)
+            child: (!widget.user.hasDoor)
                 // ignore: deprecated_member_use
                 ? RaisedButton(
                     elevation: 5.0,
@@ -119,14 +135,14 @@ class Door extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(3)),
                     child: Text(
-                        (user.idiom == "English") ? 'Add Door'
-                        :(user.idiom == "Español") ? 'Añadir Puerta'
+                        (widget.user.idiom == "English") ? 'Add Door'
+                        :(widget.user.idiom == "Español") ? 'Añadir Puerta'
                         :'Adicionar porta',
                         style: TextStyle(color: Colors.white, fontSize: 18)),
                   )
                 : Text(
-                    (user.idiom == "English") ? 'Waiting for admin...'
-                    : (user.idiom == "Español") ?'Esperando al admin...'
+                    (widget.user.idiom == "English") ? 'Waiting for admin...'
+                    : (widget.user.idiom == "Español") ?'Esperando al admin...'
                     :'Esperando pelo admin ...',
                     style: TextStyle(fontSize: 18)),
           ));

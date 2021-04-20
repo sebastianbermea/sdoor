@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:sdoor/models/user.dart';
+import 'package:sdoor/screens/home/data.dart';
 import 'package:sdoor/screens/home/door.dart';
-import 'package:sdoor/screens/home/registration.dart';
+import 'package:sdoor/screens/home/registerScreen.dart';
 import 'package:sdoor/screens/home/settingsW.dart';
 import 'package:provider/provider.dart';
 import 'package:sdoor/services/db.dart';
@@ -378,9 +379,16 @@ class _HomeState extends State<Home> {
                           ),
                         ))
                   : ((_currentIndex == 1)
-                      ? Center(child: Text('Data'))
+                      ? ((newUser.doorId.isNotEmpty)
+                          ? DataScreen(user: newUser,)
+                          : Center(
+                              child: Text((newUser.idiom == "English")
+                                  ? 'No door available'
+                                  : (newUser.idiom == "Español")
+                                      ? 'No hay puerta disponible'
+                                      : 'Sem porta disponível')))
                       : ((newUser.doorId.isNotEmpty)
-                          ? Registration(user: newUser)
+                          ? RegisterScreen(user: newUser)
                           : Center(
                               child: Text((newUser.idiom == "English")
                                   ? 'No door available'
@@ -479,6 +487,8 @@ class _HomeState extends State<Home> {
         });
         show('Door added');
         if(huser!=null){
+          await DBService(
+          doorId: "Door1",uid: huser.uid).addDoor();       
             huser.doorId = 'Door1';
             huser.hasDoor = true;
             huser.viewData = true;

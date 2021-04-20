@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sdoor/models/doorData.dart';
 import 'package:sdoor/models/newdoor.dart';
 import 'package:sdoor/models/user.dart';
 
@@ -72,7 +73,14 @@ class DBService {
   Future<NewDoor> get getDoor async {
     DocumentSnapshot snapshot = await doorCollection.doc(doorId).get();
     if (snapshot.exists)
-      return NewDoor(doorId: doorId, owner: snapshot.data()['owner'], waitlist: (snapshot.data()['waitlist'].cast<String>()));
+      return NewDoor(doorId: doorId, owner: snapshot.data()['owner'], 
+      waitlist: (snapshot.data()['waitlist'].cast<String>()),
+      dataList: List<DoorData>.from(snapshot.data()["data"].map((item) {
+            return new DoorData(
+                username: item["name"],
+                finger: item["finger"],
+                dateTime: DateTime.parse(item["time"].toDate().toString()));
+          })));
     else
       return null;
   }
@@ -83,6 +91,7 @@ class DBService {
         .set({
           'owner': uid,
           'waitlist': [],
+          'data': [],
         })
         .then((value) => print("Door Added"))
         .catchError((error) => print("Failed to add user: $error"));
@@ -93,6 +102,19 @@ class DBService {
         .doc(doorId)
         .update({
           'waitlist': FieldValue.arrayUnion([uid]),
+        })
+        .then((value) => print("Door Added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+  Future<void> updateDoorData({String name, bool finger}) {
+    return doorCollection
+        .doc(doorId)
+        .update({
+          'data': FieldValue.arrayUnion([{
+            "name": name,
+            "finger":finger,
+            "time": DateTime.now()
+             }]),
         })
         .then((value) => print("Door Added"))
         .catchError((error) => print("Failed to add user: $error"));
@@ -108,3 +130,4 @@ class DBService {
   }
   
 }
+
