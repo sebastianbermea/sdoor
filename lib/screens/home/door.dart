@@ -5,7 +5,8 @@ import 'package:sdoor/services/db.dart';
 
 class Door extends StatefulWidget {
   final NewUser user;
-  Door({this.user});
+  final NewDoor door;
+  Door({this.user, this.door});
 
   @override
   _DoorState createState() => _DoorState();
@@ -13,58 +14,13 @@ class Door extends StatefulWidget {
 
 class _DoorState extends State<Door> {
   String lastPerson = "xxxx xxxx xxxx";
-
-  createAlertDialog(BuildContext context) {
-    TextEditingController controller = TextEditingController();
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text((widget.user.idiom == "English") ? 'Door ID' :(widget.user.idiom == "Español") ?  'ID Puerta':'ID porta'),
-            content: TextField(
-              controller: controller,
-            ),
-            actions: <Widget>[
-              MaterialButton(
-                  elevation: 5.0,
-                  child: Text((widget.user.idiom == "English") ? 'Submit' : (widget.user.idiom == "Español") ?'Aceptar':'Aceitar'),
-                  onPressed: () async {
-                    if (controller.text.toString().isNotEmpty) {
-                      NewDoor door = await DBService(
-                              doorId: controller.text.toString(), uid: widget.user.uid)
-                          .getDoor;
-                      if (door == null) {
-                        print("New Owner");
-                        await DBService(
-                                doorId: controller.text.toString(),
-                                uid: widget.user.uid)
-                            .addDoor();                 
-                        widget.user.doorId = controller.text.toString();
-                        widget.user.hasDoor = true;
-                        widget.user.viewData = true;
-                        widget.user.register = true;
-                      } else {
-                         await DBService(
-                                doorId: controller.text.toString(),
-                                uid: widget.user.uid)
-                            .registerToDoor();
-                        print("Permision");
-                        widget.user.hasDoor = true;
-                      }
-                      await DBService(uid: widget.user.uid).updateUserData(widget.user.username, widget.user.idiom, widget.user.hasDoor, widget.user.doorId, widget.user.viewData, widget.user.register, widget.user.admin);
-                    }
-
-                    Navigator.of(context).pop();
-                  })
-            ],
-          );
-        });
-  }
-
+  
+ 
   @override
   Widget build(BuildContext context) {
-    return (widget.user.doorId.isNotEmpty)
-        ? Center(
+    if(widget.door!=null)
+      lastPerson = widget.door.dataList[widget.door.dataList.length-1].username;
+    return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -120,31 +76,6 @@ class _DoorState extends State<Door> {
                 ),
               ],
             ),
-          )
-        : (Center(
-            child: (!widget.user.hasDoor)
-                // ignore: deprecated_member_use
-                ? RaisedButton(
-                    elevation: 5.0,
-                    padding:
-                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 40),
-                    onPressed: () {
-                      createAlertDialog(context);
-                    },
-                    color: Colors.lightBlue,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(3)),
-                    child: Text(
-                        (widget.user.idiom == "English") ? 'Add Door'
-                        :(widget.user.idiom == "Español") ? 'Añadir Puerta'
-                        :'Adicionar porta',
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
-                  )
-                : Text(
-                    (widget.user.idiom == "English") ? 'Waiting for admin...'
-                    : (widget.user.idiom == "Español") ?'Esperando al admin...'
-                    :'Esperando pelo admin ...',
-                    style: TextStyle(fontSize: 18)),
-          ));
+    );
   }
 }

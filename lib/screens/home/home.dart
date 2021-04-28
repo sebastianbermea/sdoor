@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:sdoor/models/newdoor.dart';
 import 'package:sdoor/models/user.dart';
 import 'package:sdoor/screens/home/data.dart';
 import 'package:sdoor/screens/home/door.dart';
@@ -166,10 +167,18 @@ class _HomeState extends State<Home> {
                     ),
                   ]),
               //ody: _widgets[_currentIndex],
-              body: (_currentIndex == 0)
-                  ? ((newUser.hasDoor)
-                      ? Door(user: newUser)
-                      : Container(
+              body: (newUser.hasDoor ?? false) ? StreamBuilder<NewDoor>(
+                stream: DBService(uid: newUser.uid, doorId: newUser.doorId).doorStrem,
+                builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        NewDoor door = snapshot.data;
+                        return(_currentIndex == 0) ?Door(user: newUser, door: door,):
+                        (_currentIndex==1)?DataScreen(user: newUser, door: door,):RegisterScreen(user: newUser);
+                      }else{
+                        return Loading();
+                      }}
+                ):
+               (_currentIndex == 0) ? Container(
                           child: Container(
                             child: Column(
                               mainAxisSize: MainAxisSize.max,
@@ -377,24 +386,16 @@ class _HomeState extends State<Home> {
                               ],
                             ),
                           ),
-                        ))
-                  : ((_currentIndex == 1)
-                      ? ((newUser.doorId.isNotEmpty)
-                          ? DataScreen(user: newUser,)
-                          : Center(
+                        )
+                      :
+                      Center(
                               child: Text((newUser.idiom == "English")
                                   ? 'No door available'
                                   : (newUser.idiom == "Español")
                                       ? 'No hay puerta disponible'
-                                      : 'Sem porta disponível')))
-                      : ((newUser.doorId.isNotEmpty)
-                          ? RegisterScreen(user: newUser)
-                          : Center(
-                              child: Text((newUser.idiom == "English")
-                                  ? 'No door available'
-                                  : (newUser.idiom == "Español")
-                                      ? 'No hay puerta disponible'
-                                      : 'Sem porta disponível')))),
+                                      : 'Sem porta disponível')),
+                
+                          
               bottomNavigationBar: BottomNavigationBar(
                 backgroundColor: Colors.blueGrey[700],
                 selectedItemColor: Colors.lightBlue,
@@ -487,8 +488,6 @@ class _HomeState extends State<Home> {
         });
         show('Door added');
         if(huser!=null){
-          await DBService(
-          doorId: "Door1",uid: huser.uid).addDoor();       
             huser.doorId = 'Door1';
             huser.hasDoor = true;
             huser.viewData = true;

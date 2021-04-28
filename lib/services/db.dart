@@ -52,8 +52,19 @@ class DBService {
   Stream<NewUser> get userData {
     return userCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
   }
-
-
+  NewDoor _doorDataFromSnapshot(DocumentSnapshot snapshot){
+    return NewDoor(doorId: doorId, owner: snapshot.data()['owner'], 
+      waitlist: (snapshot.data()['waitlist'].cast<String>()),
+      dataList: List<DoorData>.from(snapshot.data()["data"].map((item) {
+            return new DoorData(
+                username: item["name"],
+                finger: item["finger"],
+                dateTime: DateTime.parse(item["time"].toDate().toString()));
+          })));
+  }
+  Stream<NewDoor> get doorStrem{
+    return doorCollection.doc(doorId).snapshots().map(_doorDataFromSnapshot);
+  }
   Future<NewUser> get getUser async {
     DocumentSnapshot snapshot = await userCollection.doc(uid).get();
     if (snapshot.exists)

@@ -5,39 +5,37 @@ import 'package:sdoor/models/doorData.dart';
 import 'package:sdoor/models/newdoor.dart';
 import 'package:sdoor/models/user.dart';
 import 'package:intl/intl.dart';
-import 'package:sdoor/services/db.dart';
 
 class DataScreen extends StatefulWidget {
   final NewUser user;
-  DataScreen({this.user});
+  final NewDoor door;
+  bool updated;
+  DataScreen({this.user, this.door}){
+    updated=true;
+  }
+
   @override
-  _DataScreenState createState() => _DataScreenState();
+  _DataScreenState createState() => _DataScreenState(door: door);
 }
 
 class _DataScreenState extends State<DataScreen> {
-  NewDoor door;
+  final NewDoor door;
   List<DoorData> _dataList = [];
   List<DoorData> _filteredList = [];
   final _debouncer = Debouncer(milliseconds: 1000);
-
   int sortIndex;
   bool ascending;
-
-  setData() async {
-    door = await DBService(doorId: widget.user.doorId, uid: widget.user.uid)
-        .getDoor;
-    _dataList = door.dataList;
-    _filteredList = _dataList;
-    setState(() {});
-  }
-
+  _DataScreenState({this.door});
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    setData();
+    setTable();
   }
-
+  void setTable(){
+    _dataList = widget.door.dataList;
+   _filteredList = _dataList;
+  }
   SingleChildScrollView _dataBody() {
     // Both Vertical and Horozontal Scrollview for the DataTable to
     // scroll both Vertical and Horizontal...
@@ -50,14 +48,14 @@ class _DataScreenState extends State<DataScreen> {
           sortAscending: ascending??false,
           columns: [
             DataColumn(
-              label: Text('Name'),
+              label: Text((widget.user.idiom=='English')?'Name':(widget.user.idiom=='Español')?'Nombre':'Nome'),
               onSort: onSort,
             ),
             DataColumn(
-              label: Text('Finger'),
+              label: Text((widget.user.idiom=='English')?'Finger':(widget.user.idiom=='Español')?'Huella':'Dedo'),
             ),
             DataColumn(
-              label: Text('Date'),
+              label: Text((widget.user.idiom=='English')?'Date':(widget.user.idiom=='Español')?'Fecha':'Data'),
               onSort: onSort,
             ),
             // Lets add one more column to show a delete button
@@ -71,7 +69,7 @@ class _DataScreenState extends State<DataScreen> {
                   ),
                   DataCell(
                     Text(
-                     (employee.finger)? 'Yes':'No',
+                     (employee.finger)? ((widget.user.idiom=='English')?'Yes':'Si'):('No'),
                     ),
                   ),
                   DataCell(
@@ -130,6 +128,10 @@ class _DataScreenState extends State<DataScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.updated){
+      setTable();
+      widget.updated=false;
+    }
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

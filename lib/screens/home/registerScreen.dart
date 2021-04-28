@@ -73,8 +73,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ? 'Prepare Fingerprint'
                                       : 'Waiting for confirmation...')
                                   : (widget.user.idiom == "Español"
-                                      ? 'Preparar Huella'
-                                      : 'Preparar Pegada')),
+                                      ? 'Esperando confirmacion'
+                                      : 'Esperando por confirmação')),
                               style:
                                   TextStyle(color: Colors.white, fontSize: 18)),
                         ),
@@ -99,9 +99,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 child: Text(
                                     (widget.user.idiom == "English"
                                         ? 'Cancel'
-                                        : (widget.user.idiom == "Español"
-                                            ? 'Preparar Huella'
-                                            : 'Preparar Pegada')),
+                                        :  'Cancelar'
+                                        ),
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 18)),
                               ),
