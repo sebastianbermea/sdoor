@@ -53,14 +53,21 @@ class DBService {
     return userCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
   }
   NewDoor _doorDataFromSnapshot(DocumentSnapshot snapshot){
-    return NewDoor(doorId: doorId, owner: snapshot.data()['owner'], 
-      waitlist: (snapshot.data()['waitlist'].cast<String>()),
-      dataList: List<DoorData>.from(snapshot.data()["data"].map((item) {
+    String owner = snapshot.data()['owner'] ?? "";
+    List<String> waitList = snapshot.data()['waitlist'].cast<String>() ?? [];
+    List<DoorData> dataList = List<DoorData>.from(snapshot.data()["data"].map((item) {
             return new DoorData(
                 username: item["name"],
                 finger: item["finger"],
+                imageUrl: item["imageUrl"] ?? "",
+                temperature: item["temp"] ??36,
                 dateTime: DateTime.parse(item["time"].toDate().toString()));
-          })));
+          })) ?? [];
+    NewDoor door =NewDoor(doorId: doorId, owner: owner, 
+      waitlist: waitList,
+      dataList: dataList);
+    
+    return door;
   }
   Stream<NewDoor> get doorStrem{
     return doorCollection.doc(doorId).snapshots().map(_doorDataFromSnapshot);
@@ -121,10 +128,13 @@ class DBService {
     return doorCollection
         .doc(doorId)
         .update({
+          'open' : true,
           'data': FieldValue.arrayUnion([{
             "name": name,
             "finger":finger,
-            "time": DateTime.now()
+            "time": DateTime.now(),
+            "imageUrl": "example.jpg",
+            'temp': 36.5,
              }]),
         })
         .then((value) => print("Door Added"))

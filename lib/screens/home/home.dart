@@ -168,6 +168,7 @@ class _HomeState extends State<Home> {
                   ]),
               //ody: _widgets[_currentIndex],
               body: (newUser.hasDoor ?? false) ? StreamBuilder<NewDoor>(
+                initialData: NewDoor(doorId: newUser.doorId, waitlist: [], dataList: []),
                 stream: DBService(uid: newUser.uid, doorId: newUser.doorId).doorStrem,
                 builder: (context, snapshot) {
                       if (snapshot.hasData) {

@@ -6,6 +6,7 @@ import 'package:sdoor/models/newdoor.dart';
 import 'package:sdoor/models/user.dart';
 import 'package:intl/intl.dart';
 
+// ignore: must_be_immutable
 class DataScreen extends StatefulWidget {
   final NewUser user;
   final NewDoor door;

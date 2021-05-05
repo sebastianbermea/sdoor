@@ -41,13 +41,13 @@ class _NotVerfiedState extends State<NotVerfied> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Center(child: Text((idiom=='English')?'Waiting for verfication...':(idiom=='Español')? 'Esperando verificacion...'
-          :'Aguardando verificação ...', style: TextStyle(color: Colors.white, fontSize: 24))),
+          :'Waiting for verfication...', style: TextStyle(color: Colors.white, fontSize: 24))),
           // ignore: deprecated_member_use
           RaisedButton(onPressed: () async{
                 await _auth.signOut();
               },
                color: Colors.pinkAccent[400],
-               child: Text(((idiom=='English')?'Log out':(idiom=='Español')?'Cerrar Sesion':'Fechar Sessão'), style: TextStyle(color: Colors.white),), )
+               child: Text(((idiom=='English')?'Log out':(idiom=='Español')?'Cerrar Sesion':'Log out'), style: TextStyle(color: Colors.white),), )
         ]
       ),
     );
